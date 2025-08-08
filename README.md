@@ -15,6 +15,12 @@ A sleek, vibe-coded todo app featuring a calendar view, light/dark mode toggle, 
 - HTML, CSS, JavaScript (Vanilla)
 - Modern CSS (variables, grid, flexbox, gradients)
 
+## Screenshots
+
+![Calendar View](assets/image1.png)
+![Main Todo Board](assets/image2.png)
+![Light Mode](assets/imgae3.png)
+
 ## Usage
 1. Clone or download this repository.
 2. Open `index.html` in your browser.
