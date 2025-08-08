@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Todo — Draggable, Animated, Beautiful</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script
+      src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"
+      defer
+    ></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <div class="app">
+      <header class="app__header">
+        <div class="title">
+          <div class="title__emoji">✅</div>
+          <h1>Todo</h1>
+        </div>
+        <button
+          class="theme-toggle"
+          id="themeToggle"
+          aria-label="Toggle theme"
+          title="Toggle theme"
+        >
+          <span class="icon" aria-hidden="true">
+            <!-- Sun / Moon icon rendered via CSS -->
+          </span>
+        </button>
+      </header>
+
+      <main class="app__main">
+        <form id="addForm" class="add">
+          <div class="add__field">
+            <button
+              class="add__icon"
+              type="submit"
+              aria-label="Add todo"
+              title="Add"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+            </button>
+            <input
+              id="todoInput"
+              class="add__input"
+              type="text"
+              placeholder="Add a task…"
+              autocomplete="off"
+            />
+            <input
+              id="dueTime"
+              class="due-input"
+              type="time"
+              title="Due time (optional)"
+            />
+          </div>
+        </form>
+
+        <div class="controls">
+          <div class="meta">
+            <span id="itemsLeft" class="items-left">0 items</span>
+            <div class="background-controls">
+              <label
+                for="backgroundImage"
+                class="bg-upload-btn"
+                title="Upload background image"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7"
+                  />
+                  <polyline points="16,5 22,5 22,11" />
+                  <polyline points="9,15 15,9 22,9" />
+                  <polyline points="9,15 9,22 2,22 2,15" />
+                </svg>
+              </label>
+              <input
+                id="backgroundImage"
+                type="file"
+                accept="image/*"
+                style="display: none"
+              />
+              <button
+                id="clearBackground"
+                class="bg-clear-btn"
+                title="Clear background"
+                style="display: none"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <button id="backToCalendar" class="clear" type="button">
+              Calendar
+            </button>
+          </div>
+        </div>
+
+        <section id="calendarView" class="calendar" aria-label="Calendar">
+          <div class="calendar__header">
+            <button
+              id="prevMonth"
+              class="icon-btn"
+              aria-label="Previous month"
+              title="Previous month"
+            >
+              ‹
+            </button>
+            <div class="calendar__title" id="monthLabel">Month YYYY</div>
+            <button
+              id="nextMonth"
+              class="icon-btn"
+              aria-label="Next month"
+              title="Next month"
+            >
+              ›
+            </button>
+          </div>
+          <div class="calendar__weekdays" aria-hidden="true">
+            <div>Sun</div>
+            <div>Mon</div>
+            <div>Tue</div>
+            <div>Wed</div>
+            <div>Thu</div>
+            <div>Fri</div>
+            <div>Sat</div>
+          </div>
+          <div id="calendarGrid" class="calendar__grid" role="grid"></div>
+        </section>
+
+        <section id="board" class="board" aria-label="Kanban board"></section>
+      </main>
+
+      <footer class="app__footer">
+        <span>Drag items using the handle for smooth reordering.</span>
+      </footer>
+    </div>
+  </body>
+</html>

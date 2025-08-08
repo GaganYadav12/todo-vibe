@@ -1,0 +1,691 @@
+:root {
+  --bg: #0c0d10;
+  --panel: #101319;
+  --panel-2: #0e1117;
+  --text: #e8eaf2;
+  --text-muted: #a6adbb;
+  --brand: #7c5cff;
+  --brand-2: #3ad0ff;
+  --accent: #1f2937;
+  --ring: 0 0 0 2px color-mix(in oklab, var(--brand) 30%, transparent);
+  --shadow: 0 20px 40px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.25);
+  --elev-1: 0 8px 20px rgba(0, 0, 0, 0.25);
+  --outline: 1px solid color-mix(in oklab, var(--text-muted) 14%, transparent);
+  --radius: 14px;
+  --radius-sm: 12px;
+  --radius-lg: 18px;
+  --spacing: 14px;
+  --transition-fast: 140ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --transition-slow: 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+html[data-theme="light"] {
+  --bg: #f7f8fb;
+  --panel: #ffffff;
+  --panel-2: #f4f6fb;
+  --text: #0b1220;
+  --text-muted: #506176;
+  --accent: #e9edf5;
+  --shadow: 0 20px 40px rgba(17, 24, 39, 0.08), 0 2px 8px rgba(17, 24, 39, 0.08);
+  --outline: 1px solid rgba(17, 24, 39, 0.06);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+  background: radial-gradient(
+      1200px 600px at 10% -10%,
+      color-mix(in oklab, var(--brand) 8%, transparent) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      1000px 500px at 110% 0%,
+      color-mix(in oklab, var(--brand-2) 10%, transparent) 0%,
+      transparent 45%
+    ),
+    var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.app {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+.app__header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  backdrop-filter: saturate(150%) blur(8px);
+  background: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--bg) 70%, transparent),
+    transparent
+  );
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 24px clamp(16px, 4vw, 32px);
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.title__emoji {
+  font-size: 22px;
+}
+.title h1 {
+  font-size: clamp(20px, 2.2vw, 28px);
+  margin: 0;
+  letter-spacing: 0.2px;
+}
+
+.theme-toggle {
+  border: none;
+  background: var(--panel-2);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 10px 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--elev-1);
+  outline: none;
+  cursor: pointer;
+  transition: transform var(--transition-fast),
+    box-shadow var(--transition-fast), background var(--transition-fast);
+}
+.theme-toggle:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+}
+.theme-toggle:active {
+  transform: translateY(0);
+}
+.theme-toggle:focus-visible {
+  box-shadow: var(--ring), var(--elev-1);
+}
+.theme-toggle .icon {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+}
+html[data-theme="light"] .theme-toggle .icon::before {
+  content: "🌙";
+}
+html[data-theme="dark"] .theme-toggle .icon::before {
+  content: "☀️";
+}
+
+.app__main {
+  margin: 0 auto;
+  width: min(1280px, calc(100% - 32px));
+  display: grid;
+  gap: 18px;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  transition: background-image var(--transition-slow);
+  border-radius: 14px;
+}
+.calendar {
+  background: var(--panel);
+  border: var(--outline);
+  border-radius: var(--radius);
+  box-shadow: var(--elev-1);
+  padding: 14px;
+  display: none;
+}
+.calendar.is-visible {
+  display: block;
+}
+.calendar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.calendar__title {
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+.calendar__weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  color: var(--text-muted);
+  padding: 6px 4px;
+}
+.calendar__weekdays > div {
+  text-align: center;
+  font-size: 12px;
+}
+.calendar__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+.cal-cell {
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  border: var(--outline);
+  background: var(--panel-2);
+  display: grid;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+  transition: box-shadow var(--transition-fast),
+    transform var(--transition-fast);
+}
+.cal-cell:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+}
+.cal-cell__day {
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 6px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.cal-cell__badge {
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--brand) 70%, transparent),
+    color-mix(in oklab, var(--brand-2) 48%, transparent)
+  );
+  color: white;
+  border-radius: 999px;
+  font-size: 10px;
+  padding: 2px 6px;
+}
+.cal-cell__list {
+  padding: 6px;
+  overflow: hidden;
+}
+.cal-cell__item {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.add {
+  background: var(--panel);
+  border-radius: var(--radius);
+  border: var(--outline);
+  padding: 14px;
+  box-shadow: var(--elev-1);
+}
+
+.add__field {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 10px;
+  background: var(--panel-2);
+  border-radius: calc(var(--radius) - 6px);
+  border: var(--outline);
+  padding: 8px 12px 8px 8px;
+}
+
+.add__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast),
+    transform var(--transition-fast);
+}
+.add__icon:hover {
+  background: var(--accent);
+  color: var(--text);
+  transform: scale(1.02);
+}
+
+.add__input {
+  width: 100%;
+  font-size: 16px;
+  padding: 10px 12px;
+  color: var(--text);
+  background: transparent;
+  border: none;
+  outline: none;
+}
+.add__input::placeholder {
+  color: color-mix(in oklab, var(--text-muted) 80%, transparent);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-inline: 4px;
+  margin-top: 6px;
+}
+
+/* Board layout */
+.board {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 18px;
+  align-items: start;
+  opacity: 0.92;
+  background: inherit;
+}
+.column {
+  background: var(--panel);
+  border-radius: var(--radius);
+  border: var(--outline);
+  padding: 12px;
+  box-shadow: var(--elev-1);
+}
+.column__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 6px 8px;
+}
+.column__header h2 {
+  margin: 0;
+  font-size: 16px;
+  letter-spacing: 0.3px;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+.count {
+  color: var(--text-muted);
+  background: var(--panel-2);
+  border: var(--outline);
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 12px;
+}
+
+.meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-muted);
+}
+.clear {
+  border: none;
+  background: var(--panel);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+  border: var(--outline);
+  box-shadow: var(--elev-1);
+}
+.clear:hover {
+  box-shadow: var(--shadow);
+  transform: translateY(-1px);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+  background: var(--panel);
+  border-radius: var(--radius);
+  border: var(--outline);
+  padding: 12px;
+  box-shadow: var(--elev-1);
+  will-change: transform;
+  transition: transform var(--transition-fast),
+    box-shadow var(--transition-fast), background var(--transition-fast),
+    opacity var(--transition-fast);
+}
+.item:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+}
+
+/* Whole item is grab area except essential controls */
+.item {
+  cursor: grab;
+}
+.item:active {
+  cursor: grabbing;
+}
+.item button,
+.item input,
+.item .icon-btn {
+  cursor: auto;
+}
+/* Improve touch hit target and dragging stability */
+.item {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.check {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 2px solid color-mix(in oklab, var(--text-muted) 55%, transparent);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  background: transparent;
+  transition: border var(--transition-fast), background var(--transition-fast);
+}
+.check::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  transform: scale(0);
+  background: linear-gradient(135deg, var(--brand), var(--brand-2));
+  transition: transform var(--transition-fast);
+}
+.check:checked {
+  border-color: color-mix(in oklab, var(--brand) 60%, transparent);
+  background: color-mix(in oklab, var(--brand) 16%, transparent);
+}
+.check:checked::before {
+  transform: scale(1);
+}
+
+/* Placeholder for completed tasks to maintain grid layout */
+.checkbox-placeholder {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.text {
+  user-select: none;
+  color: var(--text);
+  line-height: 1.45;
+  letter-spacing: 0.2px;
+}
+.text.completed {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.icon-btn {
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast),
+    transform var(--transition-fast);
+}
+.icon-btn:hover {
+  background: var(--accent);
+  color: var(--text);
+  transform: scale(1.02);
+}
+
+.edit-input {
+  width: 100%;
+  font-size: 16px;
+  padding: 8px 10px;
+  color: var(--text);
+  background: var(--panel-2);
+  border: var(--outline);
+  border-radius: 10px;
+  outline: none;
+  transition: box-shadow var(--transition-fast);
+}
+.edit-input:focus {
+  box-shadow: var(--ring);
+}
+
+.ghost {
+  opacity: 0.5;
+  transform: translateZ(0) rotate(0.2deg) scale(0.99);
+  filter: saturate(0.95);
+}
+.chosen {
+  transform: scale(1.01);
+}
+.drag {
+  cursor: grabbing;
+}
+
+.app__footer {
+  display: grid;
+  place-items: center;
+  padding: 28px;
+  color: var(--text-muted);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.item.enter {
+  animation: fadeInUp 0.25s var(--transition-fast) both;
+}
+/* Smooth placeholder spacing during drag */
+.sortable-ghost {
+  opacity: 0.4;
+}
+.sortable-fallback {
+  opacity: 0.8;
+  transform: scale(0.98);
+}
+.sortable-anim {
+  transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Board controls removed */
+
+/* Column header actions */
+.col-actions {
+  display: inline-flex;
+  gap: 6px;
+}
+.col-btn {
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.col-btn:hover {
+  background: var(--accent);
+  color: var(--text);
+}
+
+/* Add task input inside column */
+.add-task {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: center;
+  background: var(--panel-2);
+  border: var(--outline);
+  border-radius: calc(var(--radius) - 6px);
+  padding: 8px 12px 8px 8px;
+  margin-top: 8px;
+}
+.add-task .add__icon {
+  width: 32px;
+  height: 32px;
+}
+.add-task .add__input {
+  font-size: 15px;
+}
+
+/* Due time and timer */
+.due {
+  font-size: 11px;
+  color: var(--text-muted);
+  background: var(--panel-2);
+  border: var(--outline);
+  border-radius: 999px;
+  padding: 2px 8px;
+  margin-left: 8px;
+}
+.due.overdue {
+  color: #ff9aa2;
+  border-color: color-mix(in oklab, #ff4455 50%, transparent);
+}
+.due-input {
+  width: 120px;
+  font-size: 14px;
+  padding: 6px 8px;
+  background: var(--panel-2);
+  color: var(--text);
+  border: var(--outline);
+  border-radius: 8px;
+}
+
+/* Background image controls */
+.background-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bg-upload-btn,
+.bg-clear-btn {
+  border: none;
+  background: var(--panel-2);
+  color: var(--text-muted);
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.bg-upload-btn:hover,
+.bg-clear-btn:hover {
+  background: var(--accent);
+  color: var(--text);
+  transform: scale(1.02);
+}
+
+/* Background image styling */
+.app__main {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  transition: background-image var(--transition-slow);
+  border-radius: 14px;
+}
+
+.app__main::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Calendar background image */
+.cal-cell {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.cal-cell::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cal-cell__day,
+.cal-cell__list {
+  position: relative;
+  z-index: 1;
+}
+
+/* Respect user preference by default */
+@media (prefers-color-scheme: dark) {
+  html[data-theme="system"] {
+    color-scheme: dark;
+  }
+}
+@media (prefers-color-scheme: light) {
+  html[data-theme="system"] {
+    color-scheme: light;
+  }
+}
